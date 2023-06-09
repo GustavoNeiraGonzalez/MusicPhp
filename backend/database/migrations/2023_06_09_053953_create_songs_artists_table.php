@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('songs', function (Blueprint $table) {
+        Schema::create('songs_artists', function (Blueprint $table) {
             $table->id();
-            $table->string('song_name')->unique();
-            $table->json('genres'); 
-            $table->string('song_path')->nullable();/*se 
-            almacenará la ubicacion de la canción, no la cancion en si 
-            en este dato */
+            $table->unsignedBigInteger('artist_id');
+            $table->foreign('artist_id')->references('id')->on('artists');
+            $table->unsignedBigInteger('song_id');
+            $table->foreign('song_id')->references('id')->on('songs');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('songs');
+        Schema::dropIfExists('songs_artists');
     }
 };

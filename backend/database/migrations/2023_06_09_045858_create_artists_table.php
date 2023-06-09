@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();;
+            $table->string('description');
+            $table->json('genres'); // Almacenar los géneros como un campo JSON
             $table->timestamps();
         });
     }

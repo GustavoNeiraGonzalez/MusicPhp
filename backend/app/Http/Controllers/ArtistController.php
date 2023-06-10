@@ -13,6 +13,9 @@ class ArtistController extends Controller
     public function index()
     {
         //
+        $artists = Artist::all();
+        //return $artists to json response
+        return response()->json($artists);
     }
 
     /**

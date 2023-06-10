@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('songs', function (Blueprint $table) {
             $table->id();
             $table->string('song_name')->unique();
-            $table->json('genres'); 
             $table->string('song_path')->nullable();/*se 
             almacenará la ubicacion de la canción, no la cancion en si 
             en este dato */

@@ -9,3 +9,13 @@ migraciones en laravel
 
 - no se usa el metodo create en el controllador porque este es para webs tradicionales, para api rest
   se usaria el metodo store para crear
+
+para eliminar algun dato de las tablas en laravel al parecer debes crear una migracion
+ y eliminar desde la funcion up en el archivo de migracion que se cree usando php artisan make:migration
+este es el ejemplo:     public function up(): void
+    {
+        //
+        Schema::table('songs', function (Blueprint $table) {
+            $table->dropColumn('genres');
+        });
+y luego migrar php artisan migrate

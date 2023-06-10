@@ -1,0 +1,11 @@
+- MusicPhp tuve que remover ; de las lineas ;extension=fileinfo y ;extension=zip 
+del archivo php.ini de donde esta instalado php, para poder instalar laravel con 
+composer correctamente removido ; de ;extension=pdo_mysql para poder realizar las 
+migraciones en laravel
+
+- para levantar el sv se usa php artisan serve
+
+-la ruta siempre usara api de manera automatica al hacer una api en laravel "http://127.0.0.1:8000/api/artists
+
+- no se usa el metodo create en el controllador porque este es para webs tradicionales, para api rest
+  se usaria el metodo store para crear

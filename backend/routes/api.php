@@ -19,3 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/artists', [ArtistController::class, 'index']);
+Route::post('/artists', [ArtistController::class, 'store']);
+Route::get('/artists/{id}', [ArtistController::class, 'show']);
+Route::delete('/artists/{id}', [ArtistController::class, 'destroy']);
+Route::put('/artists/{id}', [ArtistController::class, 'update']);

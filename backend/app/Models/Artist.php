@@ -13,4 +13,8 @@ class Artist extends Model
     {
         return $this->belongsToMany(Song::class);
     }
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, 'artists_genres');
+    }
 }

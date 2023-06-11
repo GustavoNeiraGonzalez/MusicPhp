@@ -1,21 +1,55 @@
 - MusicPhp tuve que remover ; de las lineas ;extension=fileinfo y ;extension=zip 
-del archivo php.ini de donde esta instalado php, para poder instalar laravel con 
-composer correctamente removido ; de ;extension=pdo_mysql para poder realizar las 
-migraciones en laravel
+  del archivo php.ini de donde esta instalado php, para poder instalar laravel con 
+  composer correctamente removido ; de ;extension=pdo_mysql para poder realizar las 
+  migraciones en laravel
 
 - para levantar el sv se usa php artisan serve
 
--la ruta siempre usara api de manera automatica al hacer una api en laravel "http://127.0.0.1:8000/api/artists
+- la ruta siempre usara api de manera automatica al hacer una api en laravel "http://127.0.0.1:8000/api/artists
 
 - no se usa el metodo create en el controllador porque este es para webs tradicionales, para api rest
   se usaria el metodo store para crear
 
-para eliminar algun dato de las tablas en laravel al parecer debes crear una migracion
- y eliminar desde la funcion up en el archivo de migracion que se cree usando php artisan make:migration
-este es el ejemplo:     public function up(): void
+- para eliminar algun dato de las tablas en laravel al parecer debes crear una migracion
+  y eliminar desde la funcion up en el archivo de migracion que se cree usando php artisan make:migration
+  este es el ejemplo:     public function up(): void
     {
         //
         Schema::table('songs', function (Blueprint $table) {
             $table->dropColumn('genres');
         });
-y luego migrar php artisan migrate
+  y luego migrar php artisan migrate
+
+- para crear un modelo se usa php artisan make:model Genres -mcr y de ahi en la seccion database/migrations 
+  buscar el modelo creado y modificar los datos para el modelo deseado a crear,
+
+- para crear relacion de un modelo a otro se usa php artisan make:migration create_artists_genres_table 
+  para crear una migracion entre 2 modelos ya creados anteriormente (artist y genres)
+  dentro de database/migrations se debe buscar la funcion up y agregar las referencias de las 2 tablas
+      public function up(): void
+    {
+        Schema::create('songs_artists', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('artist_id');
+            $table->foreign('artist_id')->references('id')->on('artists');
+            $table->unsignedBigInteger('song_id');
+            $table->foreign('song_id')->references('id')->on('songs');
+            $table->timestamps();
+        });
+    }
+ ahora nos vamos a la seccion models artist y songs y agregamos algo similar a  
+	esto dentro del modelo songs   
+    public function artists(): BelongsToMany
+      {
+         return $this->belongsToMany(Artist::class);
+      }
+  y caso contrario en el modelo artist donde se usaria songs()
+ (ahora en caso de relacion de 2 pero para 3 tablas, como en el caso artist songs y genres, esto se haria
+ solo dentro de artist y songs (con genres() ), si se usara dentro de genres es porque necesitarias 
+ obtener los artistas o canciones pertenecientes a un genero)
+
+ y finalmente se ejecutara la migracion con php artisan migrate
+
+ ERROR DE SUBIR ARCHIVOS TUVE QUE AUMENTAR EL TAMAÑO DE ARCHIVOS SUBIDOS DE 2M A 100M O DABA ERROR 
+ busca en php.ini esto y cambia el 2M a 100M que estará abajo: Maximum allowed size 
+ Failed to open stream: Permission denied

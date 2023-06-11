@@ -42,13 +42,14 @@ class SongController extends Controller
 
             // Generar un nombre único para el archivo
             $fileName = uniqid() . '.' . $songFile->getClientOriginalExtension();
-
+            
             // Almacenar el archivo en el sistema de archivos
-            $songFile->storeAs('songs', $fileName);
+            //Storage::disk('public')->put($fileName,$songFile);
+            $songFile->storeAs('', $fileName,'public');
 
             // Crear una nueva instancia del modelo Song y asignar la ruta de la canción
             $song = new Song;
-            $song->song_path = 'songs/' . $fileName;
+            $song->song_path = 'public/' . $fileName;
             // Otros campos de la canción...
             $song->song_name = $request->song_name;
             $song->save();

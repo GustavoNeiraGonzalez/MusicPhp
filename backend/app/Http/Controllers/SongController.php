@@ -71,9 +71,32 @@ class SongController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Song $song)
+    public function show(Song $song,$id)
     {
-        //
+        try {
+            // Buscar la canción en la base de datos
+            $song = Song::find($id);
+
+            // Verificar si se encontró la canción
+            if (!$song) {
+                throw new \Exception('Song not found');
+            }
+
+            // Obtener la ruta completa de la canción
+            $songPath = storage_path('app/' . $song->song_path);
+
+            // Verificar si el archivo de la canción existe
+            if (!file_exists($songPath)) {
+                throw new \Exception('Song file not found');
+            }
+
+            // Devolver la canción como una respuesta de descarga
+            return response()->download($songPath);
+        } catch (\Exception $e) {
+            // Realizar las acciones necesarias para manejar este error
+            $error = "Failed to retrieve song: " . $e->getMessage();
+            return response()->json($error);
+        }
     }
 
     /**
@@ -87,16 +110,63 @@ class SongController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Song $song)
+    public function update(Request $request, Song $song, $id)
     {
-        //
+        try {      
+            // Buscar el artista en la base de datos
+            $song = Song::find($id);
+        
+            // Verificar si se encontró el artista
+            if (!$song) {
+                throw new \Exception('Song not found');
+            }
+        
+            // Actualizar los campos de la canción...
+            $song->song_name = $request->song_name;
+            // Otros campos de la canción...
+            $song->save();
+        
+            // Devolver una respuesta adecuada...
+            $data = [
+                'message' => 'Song updated successfully',
+                'song' => $song
+            ];
+            return response()->json($data);
+        } catch (\Exception $e) {
+            // Realizar las acciones necesarias para manejar este error
+            $error = "Failed to update song: " . $e->getMessage();
+            return response()->json($error);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Song $song)
+    public function destroy(Song $song,$id)
     {
-        //
+        try {
+
+            $song = Song::find($id);
+        
+            // Verificar si se encontró la cancion
+            if (!$song) {
+                throw new \Exception('Song not found');
+            }
+        
+            // Eliminar de la base de datos
+            $song->delete();
+        
+            // Devolver una respuesta adecuada...
+            $data = [
+                'message' => 'Song deleted successfully'
+            ];
+            return response()->json($data);
+        } catch (\Exception $e) {
+            // Realizar las acciones necesarias para manejar este error
+            $error = "Failed to delete song: " . $e->getMessage();
+            return response()->json($error);
+        }
+        
+            
     }
 }

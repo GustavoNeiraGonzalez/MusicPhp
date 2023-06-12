@@ -29,7 +29,9 @@ Route::put('/artists/{id}', [ArtistController::class, 'update']);
 //songs
 Route::get('/songs', [SongController::class, 'index']);
 Route::post('/songs', [SongController::class, 'store']);
-Route::get('/songs/{id}', [SongController::class, 'show']);
+Route::get('/songs/file/{id}', [SongController::class, 'showFile']);
+Route::get('/songs/name/{id}', [SongController::class, 'showName']);
+
 Route::delete('/songs/{id}', [SongController::class, 'destroy']);
 Route::put('/songs/{id}', [SongController::class, 'update']);
 

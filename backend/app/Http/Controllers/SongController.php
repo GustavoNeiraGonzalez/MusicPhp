@@ -6,6 +6,7 @@ use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use TheSeer\Tokenizer\Exception;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class SongController extends Controller
 {
@@ -34,7 +35,7 @@ class SongController extends Controller
     public function store(Request $request)
     {
         try {
-
+            $song = new Song;
             // Validar la solicitud y procesar los datos necesarios...
 
             // Obtener el archivo de la canción
@@ -48,7 +49,7 @@ class SongController extends Controller
             $songFile->storeAs('', $fileName,'public');
 
             // Crear una nueva instancia del modelo Song y asignar la ruta de la canción
-            $song = new Song;
+            
             $song->song_path = 'public/' . $fileName;
             // Otros campos de la canción...
             $song->song_name = $request->song_name;
@@ -71,7 +72,7 @@ class SongController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Song $song,$id)
+    public function showFile(Song $song,$id)
     {
         try {
             // Buscar la canción en la base de datos
@@ -89,16 +90,35 @@ class SongController extends Controller
             if (!file_exists($songPath)) {
                 throw new \Exception('Song file not found');
             }
+             // Devolver la canción como una respuesta de archivo
+            $response = response()->file($songPath);
+
+            return $response;
 
             // Devolver la canción como una respuesta de descarga
-            return response()->download($songPath);
         } catch (\Exception $e) {
             // Realizar las acciones necesarias para manejar este error
             $error = "Failed to retrieve song: " . $e->getMessage();
             return response()->json($error);
         }
     }
+    public function showName(Song $song,$id)
+    {
+        try {
 
+            $song = Song::find($id);
+
+            if (!$song) {
+                return response()->json(['message' => 'Artist not found'], 404);
+            }
+            return response()->json($song->song_name);
+
+        } catch (\Exception $e) {
+            // Realizar las acciones necesarias para manejar este error
+            $error = "Failed to retrieve song: " . $e->getMessage();
+            return response()->json($error);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -112,24 +132,50 @@ class SongController extends Controller
      */
     public function update(Request $request, Song $song, $id)
     {
-        try {      
-            // Buscar el artista en la base de datos
+        try {
+            // Buscar la canción en la base de datos
             $song = Song::find($id);
-        
-            // Verificar si se encontró el artista
+
+            // Verificar si se encontró la canción
             if (!$song) {
                 throw new \Exception('Song not found');
             }
-        
-            // Actualizar los campos de la canción...
+    
+            // Obtener el archivo de la nueva canción
+            $newSongFile = $request->file('song');
+    
+            // Verificar si se proporcionó un nuevo archivo de canción
+            if ($newSongFile) {
+                // Obtener la ruta completa del archivo anterior
+                $oldSongPath = storage_path('app/' . $song->song_path);
+    
+                // Verificar si el archivo anterior existe y eliminarlo
+                if (file_exists($oldSongPath)) {
+                    unlink($oldSongPath);
+                }
+    
+                // Generar un nombre único para el nuevo archivo
+                $newFileName = uniqid() . '.' . $newSongFile->getClientOriginalExtension();
+    
+                // Almacenar el nuevo archivo en el sistema de archivos
+                $newSongFile->storeAs('', $newFileName, 'public');
+    
+                // Actualizar la ruta de la canción con el nuevo archivo
+                $song->song_path = 'public/' . $newFileName;
+            }
+    
+            // Actualizar los demás campos de la canción si es necesario
             $song->song_name = $request->song_name;
+            
             // Otros campos de la canción...
+    
+            // Guardar los cambios en la base de datos
             $song->save();
-        
+    
             // Devolver una respuesta adecuada...
             $data = [
                 'message' => 'Song updated successfully',
-                'song' => $song
+                'song' => $request->all()
             ];
             return response()->json($data);
         } catch (\Exception $e) {

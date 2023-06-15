@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Song;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use TheSeer\Tokenizer\Exception;
@@ -130,60 +131,35 @@ class SongController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Song $song, $id)
+    public function update(Request $request, $id)
     {
         try {
-            // Buscar la canción en la base de datos
-            $song = Song::find($id);
+            $song = Song::findOrFail($id);
 
-            // Verificar si se encontró la canción
-            if (!$song) {
-                throw new \Exception('Song not found');
-            }
-    
-            // Obtener el archivo de la nueva canción
-            $newSongFile = $request->file('song');
-    
-            // Verificar si se proporcionó un nuevo archivo de canción
-            if ($newSongFile) {
-                // Obtener la ruta completa del archivo anterior
-                $oldSongPath = storage_path('app/' . $song->song_path);
-    
-                // Verificar si el archivo anterior existe y eliminarlo
-                if (file_exists($oldSongPath)) {
-                    unlink($oldSongPath);
-                }
-    
-                // Generar un nombre único para el nuevo archivo
-                $newFileName = uniqid() . '.' . $newSongFile->getClientOriginalExtension();
-    
-                // Almacenar el nuevo archivo en el sistema de archivos
-                $newSongFile->storeAs('', $newFileName, 'public');
-    
-                // Actualizar la ruta de la canción con el nuevo archivo
-                $song->song_path = 'public/' . $newFileName;
-            }
-    
-            // Actualizar los demás campos de la canción si es necesario
-            $song->song_name = $request->input('song_name');
-            
-            // Otros campos de la canción...
-    
-            // Guardar los cambios en la base de datos
+            $song->song_name = $request->song_name;
             $song->save();
-    
-            // Devolver una respuesta adecuada...
+        
             $data = [
-                'message' => 'Song updated successfully',
-                'song' => $request->all()
+                'message' => 'Artist updated successfully',
+                'artist' => $song
             ];
+        
             return response()->json($data);
-        } catch (\Exception $e) {
-            // Realizar las acciones necesarias para manejar este error
+        } catch (ModelNotFoundException $e) {
+            $data = [
+                'message' => 'Failed to update song',
+                'error' => 'song no encontrado con id: ' . $id
+            ];
+    
+            return response()->json($data, 404);
+        } catch (Exception $e) {
+            // Excepción genérica para cualquier otro tipo de error
             $error = "Failed to update song: " . $e->getMessage();
             return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

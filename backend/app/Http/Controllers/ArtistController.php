@@ -93,7 +93,7 @@ class ArtistController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Artist $artist, $id)
+    public function update(Request $request, $id)
     {
         try {
             $artist = Artist::findOrFail($id);

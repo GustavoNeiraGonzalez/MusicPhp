@@ -165,7 +165,7 @@ class SongController extends Controller
             }
     
             // Actualizar los demás campos de la canción si es necesario
-            $song->song_name = $request->song_name;
+            $song->song_name = $request->input('song_name');
             
             // Otros campos de la canción...
     

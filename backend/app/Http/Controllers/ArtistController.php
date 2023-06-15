@@ -153,4 +153,13 @@ class ArtistController extends Controller
     
         
     }
+    public function attach(request $request){
+        $artist =  Artist::find($request->artist_id);
+        $artist->services()->attach($request->song_id);
+        $data = [
+            'message' => 'Service attached succesfully',
+            'Artist' => $artist
+        ];
+        return response()->json($data);
+    }
 }

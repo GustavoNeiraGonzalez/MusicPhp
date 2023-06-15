@@ -45,4 +45,5 @@ Route::delete('/genre/delete/{id}', [GenresController::class, 'destroy']);
 Route::put('/genre/put/{id}', [GenresController::class, 'update']);
 
 
-//
+// unir tablas
+Route::post('/artists/songs', [ArtistController::class, 'attach']);

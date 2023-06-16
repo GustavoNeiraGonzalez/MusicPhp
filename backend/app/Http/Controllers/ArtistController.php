@@ -16,8 +16,12 @@ class ArtistController extends Controller
     {
         //
         $artists = Artist::all();
+        $data = [
+            'message'=>'Artists Details',
+            'Artist' =>$artists,
+        ];
         //return $artists to json response
-        return response()->json($artists);
+        return response()->json($data);
     }
 
     /**
@@ -56,7 +60,7 @@ class ArtistController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Artist $artist, $id)
+    public function show( $id)
     {
         try {
 
@@ -65,8 +69,14 @@ class ArtistController extends Controller
             if (!$artist) {
                 return response()->json(['message' => 'Artist not found'], 404);
             }
-        
-            return response()->json($artist);
+            $data = [
+                'message'=>'Artists Details',
+                'Artist' =>$artist,
+                'Canciones'=>$artist->songs,
+                'Generos'=>$artist->genres
+            ];
+            //return $artists to json response
+            return response()->json($data);
         } catch (ModelNotFoundException $e) {
             $data = [
                 'message' => 'Failed to show artist',
@@ -154,12 +164,35 @@ class ArtistController extends Controller
         
     }
     public function attach(request $request){
-        $artist =  Artist::find($request->artist_id);
-        $artist->services()->attach($request->song_id);
-        $data = [
-            'message' => 'Service attached succesfully',
-            'Artist' => $artist
-        ];
-        return response()->json($data);
+        try{
+            $artists =  Artist::find($request->artist_id);
+            $artists->songs()->attach($request->song_id);
+            $data = [
+                'message' => 'song attached succesfully',
+                'Artist' => $artists
+            ];
+            return response()->json($data);
+        } catch (Exception $e) {
+            // Excepción genérica para cualquier otro tipo de error
+            $error = "Failed to attach artist/song: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
+        }
+    }
+    public function attachgenre(request $request){
+        try{
+            $artists =  Artist::find($request->artist_id);
+            $artists->genres()->attach($request->genre_id);
+            $data = [
+                'message' => 'genre attached succesfully',
+                'Artist' => $artists
+            ];
+            return response()->json($data);
+        } catch (Exception $e) {
+            // Excepción genérica para cualquier otro tipo de error
+            $error = "Failed to attach artist/genre: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
+        }
     }
 }

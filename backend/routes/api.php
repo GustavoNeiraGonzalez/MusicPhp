@@ -20,7 +20,8 @@ use App\Http\Controllers\GenresController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+//recordar que al acceder a la url de la peticion siempre hay que usar 
+//donde api es parte si o si del link http://127.0.0.1:8000/api/
 //artist
 Route::get('/artists', [ArtistController::class, 'index']);
 Route::post('/artists/post', [ArtistController::class, 'store']);
@@ -46,4 +47,7 @@ Route::put('/genre/put/{id}', [GenresController::class, 'update']);
 
 
 // unir tablas
+//artista cancion
 Route::post('/artists/songs', [ArtistController::class, 'attach']);
+//artista genero
+Route::post('/artists/genres', [ArtistController::class, 'attachgenre']);

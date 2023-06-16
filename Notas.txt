@@ -53,3 +53,11 @@
  ERROR DE SUBIR ARCHIVOS TUVE QUE AUMENTAR EL TAMAÑO DE ARCHIVOS SUBIDOS DE 2M A 100M O DABA ERROR 
  busca en php.ini esto y cambia el 2M a 100M que estará abajo: Maximum allowed size 
  Failed to open stream: Permission denied
+
+- Error descubierto, put con archivos no funciona en laravel correctamente, por lo que hay que enmascarar la peticion post para que la trate como put, este es un ejemplo usando axios en vueJs: .post('http://127.0.0.1:8000/api/songs/put/2', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-HTTP-Method-Override': 'PUT'
+          }
+        })
+ donde formdata contiene el archivo (de musica en el caso) y el nombre de cancion 

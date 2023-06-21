@@ -48,6 +48,9 @@ Route::put('/genre/put/{id}', [GenresController::class, 'update']);
 
 // unir tablas
 //artista cancion
-Route::post('/artists/songs', [ArtistController::class, 'attach']);
+Route::post('/atach/artists/songs', [ArtistController::class, 'attachsong']);
+Route::post('/detach/artists/songs', [ArtistController::class, 'attachgenre']);
+
 //artista genero
-Route::post('/artists/genres', [ArtistController::class, 'attachgenre']);
+Route::post('/atach/artists/genres', [ArtistController::class, 'attachgenre']);
+Route::post('/detach/artists/genres', [ArtistController::class, 'detachgenre']);

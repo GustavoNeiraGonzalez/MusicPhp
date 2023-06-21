@@ -163,34 +163,107 @@ class ArtistController extends Controller
     
         
     }
-    public function attach(request $request){
-        try{
-            $artists =  Artist::find($request->artist_id);
-            $artists->songs()->attach($request->song_id);
+    //-------------- UNIR TABLAS SONG Y GENRES CON ARTIST -------------
+    public function attachsong(Request $request)
+    {
+        try {
+            $artist = Artist::find($request->artist_id);
+    
+            // Verificar si ya existe la unión entre el artista y la canción
+            if ($artist->songs()->where('song_id', $request->song_id)->exists()) {
+                $message = 'Song already attached to the artist';
+            } else {
+                // Unir la canción al artista sin duplicación
+                $artist->songs()->syncWithoutDetaching($request->song_id);
+                $message = 'Song attached successfully';
+            }
+    
             $data = [
-                'message' => 'song attached succesfully',
-                'Artist' => $artists
+                'message' => $message,
+                'Artist' => $artist
             ];
+    
             return response()->json($data);
         } catch (Exception $e) {
-            // Excepción genérica para cualquier otro tipo de error
             $error = "Failed to attach artist/song: " . $e->getMessage();
             return response()->json($error);
             // Realiza las acciones necesarias para manejar este error
         }
     }
-    public function attachgenre(request $request){
-        try{
-            $artists =  Artist::find($request->artist_id);
-            $artists->genres()->attach($request->genre_id);
+    
+    public function detachsong(Request $request){
+        try {
+            $artist = Artist::find($request->artist_id);
+
+            // Verificar si la unión existe antes de eliminarla
+            $detached = $artist->songs()->detach($request->song_id);
+
+            if ($detached > 0) {
+                $message = 'Song detached successfully';
+            } else {
+                $message = 'Song was not attached to the artist';
+            }
+
             $data = [
-                'message' => 'genre attached succesfully',
-                'Artist' => $artists
+                'message' => $message,
+                'Artist' => $artist
             ];
+
             return response()->json($data);
         } catch (Exception $e) {
-            // Excepción genérica para cualquier otro tipo de error
+            $error = "Failed to detach artist/song: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
+        }
+    }
+
+    public function attachgenre(Request $request){
+        try {
+            $artist = Artist::find($request->artist_id);
+
+            // Verificar si ya existe la unión entre el artista y el género
+            if ($artist->genres()->where('genres_id', $request->genre_id)->exists()) {
+                $message = 'Genre already attached to the artist';
+            } else {
+                // Unir el género al artista sin duplicación
+                $artist->genres()->syncWithoutDetaching($request->genre_id);
+                $message = 'Genre attached successfully';
+            }
+
+            $data = [
+                'message' => $message,
+                'Artist' => $artist
+            ];
+
+            return response()->json($data);
+        } catch (Exception $e) {
             $error = "Failed to attach artist/genre: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
+        }
+    }
+
+    public function detachgenre(Request $request){
+        try {
+            $artist = Artist::find($request->artist_id);
+
+            // Verificar si la unión existe antes de eliminarla
+            $detached = $artist->genres()->detach($request->genre_id);
+
+            if ($detached > 0) {
+                $message = 'Genre detached successfully';
+            } else {
+                $message = 'Genre was not attached to the artist';
+            }
+
+            $data = [
+                'message' => $message,
+                'Artist' => $artist
+            ];
+
+            return response()->json($data);
+        } catch (Exception $e) {
+            $error = "Failed to detach artist/genre: " . $e->getMessage();
             return response()->json($error);
             // Realiza las acciones necesarias para manejar este error
         }

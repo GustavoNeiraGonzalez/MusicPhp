@@ -54,3 +54,7 @@ Route::post('/detach/artists/songs', [ArtistController::class, 'attachgenre']);
 //artista genero
 Route::post('/atach/artists/genres', [ArtistController::class, 'attachgenre']);
 Route::post('/detach/artists/genres', [ArtistController::class, 'detachgenre']);
+
+//cancion genero
+Route::post('/atach/songs/genres', [SongController::class, 'attachgenre']);
+Route::post('/detach/songs/genres', [SongController::class, 'detachgenre']);

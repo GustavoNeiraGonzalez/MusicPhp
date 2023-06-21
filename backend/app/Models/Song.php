@@ -11,10 +11,10 @@ class Song extends Model
     use HasFactory;
     public function artists(): BelongsToMany
     {
-        return $this->belongsToMany(Artist::class);
+        return $this->belongsToMany(Artist::class,'songs_artists');
     }
     public function genres()
     {
-        return $this->belongsToMany(Genre::class, 'artists_genres');
+        return $this->belongsToMany(Genres::class, 'songs_genres');
     }
 }

@@ -110,9 +110,14 @@ class SongController extends Controller
             $song = Song::find($id);
 
             if (!$song) {
-                return response()->json(['message' => 'Artist not found'], 404);
+                return response()->json(['message' => 'Song not found'], 404);
             }
-            return response()->json($song->song_name);
+            $data = [
+                'message'=>'Song Details',
+                'Song' =>$song->song_name,
+                'Generos'=>$song->genres
+            ];
+            return response()->json($data);
 
         } catch (\Exception $e) {
             // Realizar las acciones necesarias para manejar este error
@@ -213,8 +218,58 @@ class SongController extends Controller
             // Realizar las acciones necesarias para manejar este error
             $error = "Failed to delete song: " . $e->getMessage();
             return response()->json($error);
+        }     
+    }
+    // ---------------------- UNIR SONG Y GENRES ------------------
+    public function attachgenre(Request $request){
+        try {
+            $song = Song::find($request->song_id);
+
+            // Verificar si ya existe la unión entre el artista y el género
+            if ($song->genres()->where('genres_id', $request->genre_id)->exists()) {
+                $message = 'Genre already attached to the Song';
+            } else {
+                // Unir el género al artista sin duplicación
+                $song->genres()->syncWithoutDetaching($request->genre_id);
+                $message = 'Genre attached successfully';
+            }
+
+            $data = [
+                'message' => $message,
+                'Song' => $song
+            ];
+
+            return response()->json($data);
+        } catch (Exception $e) {
+            $error = "Failed to attach Song/genre: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
         }
-        
-            
+    }
+
+    public function detachgenre(Request $request){
+        try {
+            $song = Song::find($request->song_id);
+
+            // Verificar si la unión existe antes de eliminarla
+            $detached = $song->genres()->detach($request->genre_id);
+
+            if ($detached > 0) {
+                $message = 'Genre detached successfully';
+            } else {
+                $message = 'Genre was not attached to the Song';
+            }
+
+            $data = [
+                'message' => $message,
+                'Song' => $song
+            ];
+
+            return response()->json($data);
+        } catch (Exception $e) {
+            $error = "Failed to detach Song/genre: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
+        }
     }
 }

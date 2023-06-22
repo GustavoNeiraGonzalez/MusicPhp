@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\GenresController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,15 @@ Route::post('/genre/post', [GenresController::class, 'store']);
 Route::get('/genre/get/{id}', [GenresController::class, 'show']);
 Route::delete('/genre/delete/{id}', [GenresController::class, 'destroy']);
 Route::put('/genre/put/{id}', [GenresController::class, 'update']);
+
+//user
+Route::get('/users', [UserController::class, 'index']);
+Route::post('/users/post', [UserController::class, 'register']);
+Route::post('/users/login', [UserController::class, 'login']);
+
+Route::get('/genre/get/{id}', [UserController::class, 'show']);
+Route::delete('/genre/delete/{id}', [UserController::class, 'destroy']);
+Route::put('/genre/put/{id}', [UserController::class, 'update']);
 
 
 // unir tablas

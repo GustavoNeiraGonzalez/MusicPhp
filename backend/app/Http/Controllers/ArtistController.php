@@ -6,15 +6,22 @@ use App\Models\Artist;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use TheSeer\Tokenizer\Exception;
+use Tymon\JWTAuth\JWTAuth;
+use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 class ArtistController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
+        $this->middleware('auth:api');
         $artists = Artist::all();
         $data = [
             'message'=>'Artists Details',

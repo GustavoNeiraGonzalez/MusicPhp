@@ -51,10 +51,6 @@ Route::get('/users', [UserController::class, 'index']);
 Route::post('/users/post', [UserController::class, 'register']);
 Route::post('/users/login', [UserController::class, 'login']);
 
-Route::get('/genre/get/{id}', [UserController::class, 'show']);
-Route::delete('/genre/delete/{id}', [UserController::class, 'destroy']);
-Route::put('/genre/put/{id}', [UserController::class, 'update']);
-
 
 // unir tablas
 //artista cancion

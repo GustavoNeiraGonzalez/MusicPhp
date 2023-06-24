@@ -6,13 +6,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use TheSeer\Tokenizer\Exception;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
+
 
 class UserController extends Controller
 {
     
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['me','login','show','register']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -46,7 +50,7 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required',
                 'email' => 'required|email|unique:users',
-                'password' => 'required|min:6',
+                'password' => 'required|string|min:6',
             ]);
             $user = User::create([
                 'name' => $validatedData['name'],
@@ -60,29 +64,84 @@ class UserController extends Controller
         }
     }
 
-    public function login(Request $request){
-        try {
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request)
+    {
+        $credentials = $request->only(['email', 'password']);
 
-            if (Auth::attempt($credentials)) {
-                $user = Auth::user();
-                $token = JWTAuth::fromUser($user);
-
-                return response()->json(['token' => $token]);
-            }
-
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Unexpected failure on login user: ' . $e->getMessage()], 500);
+        if (!auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized: Invalid credentials'], 401);
         }
+
+        $token = auth()->attempt($credentials);
+        if (!$token) {
+            return response()->json(['error' => 'Unauthorized: Invalid token'], 401);
+        }
+
+        return $this->respondWithToken($token);
     }
 
     /**
-     * Display the specified resource.
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
+    public function me()
+    {
+        try {
+            $user = auth()->userOrFail();
+            return response()->json($user);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json(['error' => 'Unauthorized: Token expired'], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return response()->json(['error' => 'Unauthorized: Invalid token'], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['error' => 'Unauthorized: Token absent'], 401);
+        }
+    }
+
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
+    }
     public function show( $id)
     {
         try {
@@ -115,6 +174,7 @@ class UserController extends Controller
         }
     }
 
+  
     /**
      * Show the form for editing the specified resource.
      */

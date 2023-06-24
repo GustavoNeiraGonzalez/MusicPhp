@@ -18,7 +18,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 //recordar que al acceder a la url de la peticion siempre hay que usar 
@@ -46,11 +46,6 @@ Route::get('/genre/get/{id}', [GenresController::class, 'show']);
 Route::delete('/genre/delete/{id}', [GenresController::class, 'destroy']);
 Route::put('/genre/put/{id}', [GenresController::class, 'update']);
 
-//user
-Route::get('/users', [UserController::class, 'index']);
-Route::post('/users/post', [UserController::class, 'register']);
-Route::post('/users/login', [UserController::class, 'login']);
-
 
 // unir tablas
 //artista cancion
@@ -64,3 +59,18 @@ Route::post('/detach/artists/genres', [ArtistController::class, 'detachgenre']);
 //cancion genero
 Route::post('/atach/songs/genres', [SongController::class, 'attachgenre']);
 Route::post('/detach/songs/genres', [SongController::class, 'detachgenre']);
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
+    Route::get('/users', [UserController::class, 'index'])->name('index');;
+    Route::post('/users/logout', [UserController::class, 'logout']);
+    Route::post('/users/refresh', [UserController::class, 'refresh']);
+    Route::get('/users/med', [UserController::class, 'me']);
+    Route::post('/users/post', [UserController::class, 'register']);
+    Route::post('/users/login', [UserController::class, 'login'])->name('login');
+    
+});

@@ -13,6 +13,11 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasRoles,HasApiTokens, HasFactory, Notifiable;
 
+    public function songs()
+    {
+        return $this->belongsToMany(Song::class, 'songs_users');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

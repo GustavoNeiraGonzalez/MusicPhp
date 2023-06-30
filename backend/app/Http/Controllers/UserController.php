@@ -16,8 +16,9 @@ class UserController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['assignRole','index','login','show','register']]);
-        $this->middleware('role:admin',['only' => ['assignRole']]);
+        //
+        $this->middleware('auth:api', ['except' => ['index','login','show','register']]);
+        $this->middleware('role:admin',['only' => ['assignRole','removeRole']]);
     } 
 
     /**
@@ -194,8 +195,7 @@ class UserController extends Controller
         try {
             $User = User::findOrFail($id);
 
-            $User->name = $request->name;
-            $User->description = $request->description;
+            $User->email = $request->email;
             $User->save();
         
             $data = [
@@ -334,5 +334,37 @@ class UserController extends Controller
             ], 500);
         }
     }
+    public function removeRole(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'user_id' => 'required',
+                'role' => 'required|exists:roles,name',
+            ]);
+
+            $user = User::findOrFail($validatedData['user_id']);
+            $role = Role::where('name', $validatedData['role'])->first();
+
+            if (!$user->hasRole($role)) {
+                return response()->json([
+                    'message' => 'Role is not assigned to the user',
+                    'user' => $user,
+                ]);
+            }
+
+            $user->removeRole($role);
+
+            return response()->json([
+                'message' => 'Role removed successfully',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error removing role',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use TheSeer\Tokenizer\Exception;
 use App\Models\User;
 use App\Http\Controllers\Controller;
@@ -14,8 +15,8 @@ class UserController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['me','login','show','register']]);
-    }
+        $this->middleware('auth:api', ['except' => ['assignRole','index','login','show','register']]);
+    } 
 
     /**
      * Display a listing of the resource.
@@ -300,6 +301,36 @@ class UserController extends Controller
         }
     }
 
+    public function assignRole(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'user_id' => 'required',
+                'role' => 'required|exists:roles,name',
+            ]);
 
+            $user = User::findOrFail($validatedData['user_id']);
+            $role = Role::where('name', $validatedData['role'])->first();
+
+            if ($user->hasRole($role)) {
+                return response()->json([
+                    'message' => 'Role is already assigned to the user',
+                    'user' => $user,
+                ]);
+            }
+
+            $user->assignRole($role);
+
+            return response()->json([
+                'message' => 'Role assigned successfully',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error assigning role',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
 }

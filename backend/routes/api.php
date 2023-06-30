@@ -59,6 +59,8 @@ Route::post('/detach/artists/genres', [ArtistController::class, 'detachgenre']);
 //cancion genero
 Route::post('/atach/songs/genres', [SongController::class, 'attachgenre']);
 Route::post('/detach/songs/genres', [SongController::class, 'detachgenre']);
+Route::get('/users', [UserController::class, 'index'])->name('index');;
+Route::post('/users/roles', [UserController::class, 'assignRole']);
 
 Route::group([
 
@@ -66,11 +68,10 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
-    Route::get('/users', [UserController::class, 'index'])->name('index');;
     Route::post('/users/logout', [UserController::class, 'logout']);
     Route::post('/users/refresh', [UserController::class, 'refresh']);
     Route::get('/users/med', [UserController::class, 'me']);
-    Route::post('/users/post', [UserController::class, 'register']);
+    Route::post('/users/register', [UserController::class, 'register']);
     Route::post('/users/login', [UserController::class, 'login'])->name('login');
     
 });

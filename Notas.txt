@@ -1,3 +1,5 @@
+password usada mysql y admin asdf5742k
+
 - MusicPhp tuve que remover ; de las lineas ;extension=fileinfo y ;extension=zip 
   del archivo php.ini de donde esta instalado php, para poder instalar laravel con 
   composer correctamente removido ; de ;extension=pdo_mysql para poder realizar las 

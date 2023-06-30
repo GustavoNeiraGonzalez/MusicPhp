@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         //
         $this->middleware('auth:api', ['except' => ['index','login','show','register']]);
-        $this->middleware('role:admin',['only' => ['assignRole','removeRole']]);
+        $this->middleware('role:admin',['only' => ['update','destroy','assignRole','removeRole']]);
     } 
 
     /**

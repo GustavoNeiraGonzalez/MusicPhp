@@ -184,6 +184,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Role' => Spatie\Permission\Models\Role::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

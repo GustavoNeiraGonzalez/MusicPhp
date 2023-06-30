@@ -1,4 +1,6 @@
 password usada mysql y admin asdf5742k
+- hay comandos para usar permisos para evitar crear nuevas migraciones o lo que sea: php artisan permission:create-role writer
+  describidos en https://spatie.be/docs/laravel-permission/v5/basic-usage/artisan
 
 - MusicPhp tuve que remover ; de las lineas ;extension=fileinfo y ;extension=zip 
   del archivo php.ini de donde esta instalado php, para poder instalar laravel con 

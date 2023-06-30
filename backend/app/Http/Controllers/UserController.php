@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use TheSeer\Tokenizer\Exception;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 
 class UserController extends Controller
@@ -16,6 +17,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['assignRole','index','login','show','register']]);
+        $this->middleware('role:admin',['only' => ['assignRole']]);
     } 
 
     /**

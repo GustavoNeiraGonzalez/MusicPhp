@@ -60,8 +60,11 @@ Route::post('/detach/artists/genres', [ArtistController::class, 'detachgenre']);
 Route::post('/atach/songs/genres', [SongController::class, 'attachgenre']);
 Route::post('/detach/songs/genres', [SongController::class, 'detachgenre']);
 Route::get('/users', [UserController::class, 'index'])->name('index');;
-Route::post('/users/roles', [UserController::class, 'assignRole']);
-
+Route::group([
+    'middleware' => 'role:admin'
+    ], function ($router) {
+        Route::post('/users/roles', [UserController::class, 'assignRole']);
+    });
 Route::group([
 
     'middleware' => 'api',

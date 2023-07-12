@@ -64,10 +64,15 @@ Route::get('/users', [UserController::class, 'index'])->name('index');;
 Route::group([
     'middleware' => 'role:admin'
     ], function ($router) {
+        /* roles */
+        Route::post('/delete/users/roles', [UserController::class, 'removeRole']);
         Route::post('/put/users/roles', [UserController::class, 'assignRole']);
+
+        /*unir tablas user song */
         Route::post('atach/users/songs', [UserController::class, 'attachsong']);
         Route::post('detach/users/songs', [UserController::class, 'detachsong']);
-        Route::post('/delete/users/roles', [UserController::class, 'removeRole']);
+        
+        /*delete update users */
         Route::delete('/users/delete/{id}', [UserController::class, 'destroy']);
         Route::put('/users/put/{id}', [UserController::class, 'update']);
         

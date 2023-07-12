@@ -24,17 +24,30 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-        $Users = User::all();
+
+public function index()
+{
+    try {
+        $users = User::select('users.*', 'roles.name as role', 'songs.song_name')
+            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->leftJoin('songs_users', 'users.id', '=', 'songs_users.user_id')
+            ->leftJoin('songs', 'songs_users.song_id', '=', 'songs.id')
+            ->get();
+
         $data = [
-            'message'=>'Users Details',
-            'User' =>$Users,
+            'message' => 'Users Details',
+            'users' => $users,
         ];
-        //return $Users to json response
+
         return response()->json($data);
+    } catch (Exception $e) {
+        $error = 'Failed to retrieve users: ' . $e->getMessage();
+        return response()->json($error);
     }
+}
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -146,38 +159,34 @@ class UserController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
-    public function show( $id)
+    public function show($id)
     {
         try {
-
-            $User = User::find($id);
-
-            if (!$User) {
-                return response()->json(['message' => 'User not found'], 404);
-            }
+            $user = User::select('users.*', 'roles.name as role_name')
+                ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->findOrFail($id);
+    
             $data = [
-                'message'=>'Users Details',
-                'User' =>$User,
-                'Canciones'=>$User->songs,
-                'Generos'=>$User->genres
-            ];
-            //return $Users to json response
+                'message' => 'User Details',
+                'user' => $user
+                ];
+    
             return response()->json($data);
         } catch (ModelNotFoundException $e) {
             $data = [
                 'message' => 'Failed to show User',
-                'error' => 'User no encontrado con id: ' . $id
+                'error' => 'User not found with id: ' . $id
             ];
     
             return response()->json($data, 404);
         } catch (Exception $e) {
-            // Excepción genérica para cualquier otro tipo de error
-            $error = "Failed to show User: " . $e->getMessage();
+            $error = 'Failed to show User: ' . $e->getMessage();
             return response()->json($error);
-            // Realiza las acciones necesarias para manejar este error
         }
     }
-
+    
+    
   
     /**
      * Show the form for editing the specified resource.

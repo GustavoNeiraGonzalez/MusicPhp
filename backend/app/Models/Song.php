@@ -21,5 +21,8 @@ class Song extends Model
     {
         return $this->belongsToMany(User::class, 'songs_users');
     }
-
+    public function visits()
+    {
+        return $this->belongsToMany(Visits::class,'visit_song');
+    }
 }

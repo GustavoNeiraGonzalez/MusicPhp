@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -17,7 +18,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Song::class, 'songs_users');
     }
-
+    public function visits()
+    {
+        return $this->belongsToMany(Visits::class,'visit_user');
+    }
     /**
      * The attributes that are mass assignable.
      *

@@ -2,10 +2,7 @@ password usada mysql y admin asdf5742k
 - hay comandos para usar permisos para evitar crear nuevas migraciones o lo que sea: php artisan permission:create-role writer
   describidos en https://spatie.be/docs/laravel-permission/v5/basic-usage/artisan
 
-- MusicPhp tuve que remover ; de las lineas ;extension=fileinfo y ;extension=zip 
-  del archivo php.ini de donde esta instalado php, para poder instalar laravel con 
-  composer correctamente removido ; de ;extension=pdo_mysql para poder realizar las 
-  migraciones en laravel
+
 
 - para levantar el sv se usa php artisan serve
 
@@ -53,6 +50,29 @@ password usada mysql y admin asdf5742k
  obtener los artistas o canciones pertenecientes a un genero)
 
  y finalmente se ejecutara la migracion con php artisan migrate
+
+ ahora los controladores
+ dentro de app/http/controllers:
+
+ En el controlador, define los métodos correspondientes a las acciones que deseas realizar para tu recurso.
+ Aquí tienes algunos ejemplos de métodos comunes en una API:
+
+ index: Recupera una colección de recursos.
+ show: Recupera un recurso específico.
+ store: Almacena un nuevo recurso.
+ update: Actualiza un recurso existente.
+ destroy: Elimina un recurso existente.
+
+
+ finalmente configurar las rutas dentro de routes/api
+
+--------------------------------------------- ERRORES --- -------------------------------------------------------------------------------
+- MusicPhp tuve que remover ; de las lineas ;extension=fileinfo y ;extension=zip 
+  del archivo php.ini de donde esta instalado php, para poder instalar laravel con 
+  composer correctamente removido ; de ;extension=pdo_mysql para poder realizar las 
+  migraciones en laravel
+
+
 
  ERROR DE SUBIR ARCHIVOS TUVE QUE AUMENTAR EL TAMAÑO DE ARCHIVOS SUBIDOS DE 2M A 100M O DABA ERROR 
  busca en php.ini esto y cambia el 2M a 100M que estará abajo: Maximum allowed size 

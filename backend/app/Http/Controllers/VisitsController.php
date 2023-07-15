@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Song;
+use App\Models\User;
 use App\Models\Visits;
 use Carbon\Carbon;
 use Dotenv\Exception\ValidationException;
@@ -35,26 +37,59 @@ class VisitsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,$id)
+    public function addVisitToSong(Request $request)
     {
         try {
+            // Validar la solicitud y obtener los datos necesarios...
             $request->validate([
                 'user_id' => 'required',
                 'song_id' => 'required',
             ]);
 
-            $visit = new Visits();
-            $visit->user_id = $request->user_id;
-            $visit->song_id = $request->song_id;
-            $visit->visited_at = Carbon::now(); // Genera la fecha y hora actual
-            $visit->save();
+            $user = User::find($request->user_id);
+            $song = Song::find($request->song_id);
+
+            if (!$user || !$song) {
+                return response()->json(['message' => 'User or song not found'], 404);
+            }
+
+            // Verificar si ya existe la relación entre el usuario y la visita
+            $existingVisit = $user->visits()->where('song_id', $song->id)->first();
+
+            // Obtener la fecha y hora actual
+            $currentDateTime = Carbon::now();
+
+            if ($existingVisit) {
+                // Si ya existe una relación de usuario y visita
+
+                // Verificar si la última visita fue hace al menos 8 minutos
+                $lastVisitedAt = $existingVisit->visited_at;
+                $minutesSinceLastVisit = $currentDateTime->diffInMinutes($lastVisitedAt);
+
+                if ($minutesSinceLastVisit >= 8) {
+                    // Agregar +1 al valor anterior de visits
+                    $existingVisit->visits += 1;
+                    $existingVisit->visited_at = $currentDateTime;
+                    $existingVisit->save();
+                }
+            } else {
+                // Si no existe una relación de usuario y visita, crear una nueva
+                $visit = new Visits();
+                $visit->user_id = $user->id;
+                $visit->song_id = $song->id;
+                $visit->visits = 1;
+                $visit->visited_at = $currentDateTime;
+                $visit->save();
+
+                // Establecer la relación entre el usuario y la visita
+                $user->visits()->attach($visit->id);
+            }
 
             $data = [
-                'message' => 'Visit created successfully',
-                'visit' => $visit,
+                'message' => 'Visit added successfully',
             ];
 
-            return response()->json($data, 201);
+            return response()->json($data, 200);
         } catch (ValidationException $e) {
             $data = [
                 'message' => 'Validation error',
@@ -64,15 +99,13 @@ class VisitsController extends Controller
             return response()->json($data, 422);
         } catch (\Exception $e) {
             $data = [
-                'message' => 'Failed to create visit',
+                'message' => 'Failed to add visit',
                 'error' => $e->getMessage(),
             ];
 
             return response()->json($data, 500);
         }
-    
     }
-
     /**
      * Display the specified resource.
      */

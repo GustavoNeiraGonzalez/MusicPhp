@@ -66,10 +66,6 @@ Route::group([
         Route::post('/atach/songs/genres', [SongController::class, 'attachgenre']);
         Route::post('/detach/songs/genres', [SongController::class, 'detachgenre']);
         
-        /*unir tablas user song */
-        Route::post('atach/users/songs', [UserController::class, 'attachsong']);
-        Route::post('detach/users/songs', [UserController::class, 'detachsong']);
-
         /* roles */
         Route::post('/delete/users/roles', [UserController::class, 'removeRole']);
         Route::post('/put/users/roles', [UserController::class, 'assignRole']);
@@ -86,6 +82,10 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
+    /*unir tablas user song porque son likes de canciones*/
+    Route::post('atach/users/songs', [UserController::class, 'attachsong']);
+    Route::post('detach/users/songs', [UserController::class, 'detachsong']);
+    
     Route::post('/users/logout', [UserController::class, 'logout']);
     Route::post('/users/refresh', [UserController::class, 'refresh']);
     Route::get('/users/med', [UserController::class, 'me']);

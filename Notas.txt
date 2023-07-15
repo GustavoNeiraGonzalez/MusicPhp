@@ -64,6 +64,162 @@ password usada mysql y admin asdf5742k
  destroy: Elimina un recurso existente.
 
 
+--- ---- EJEMPLO DE LO QUE SE  VERIA SI TIENES REQUERIMIENTOS DE PERMISOS O AUTENTICACION PARA CIERTOS METODOS ----------------------
+class UserController extends Controller
+{
+    
+    public function __construct()
+    {
+        //
+        $this->middleware('auth:api', ['except' => ['index','login','show','register']]);
+        $this->middleware('role:admin',['only' => ['update','destroy','assignRole','removeRole']]);
+    } 
+-----------------------------------------------------------------------------------------
+----------- EJEMPLOS DEL CONTROLADOR ---------------------
+public function index()
+    {
+        $artists = Artist::all();
+
+        $data = [
+            'message' => 'Artists Details',
+            'artists' => $artists,
+        ];
+
+        return response()->json($data);
+    }
+
+public function show($id)
+    {
+        $artist = Artist::findOrFail($id);
+
+        $data = [
+            'message' => 'Artist Details',
+            'artist' => $artist,
+        ];
+
+        return response()->json($data);
+    }
+
+public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required',
+                'genre' => 'required',
+            ]);
+
+            $artist = new Artist();
+            $artist->name = $request->name;
+            $artist->genre = $request->genre;
+            $artist->save();
+
+            $data = [
+                'message' => 'Artist created successfully',
+                'artist' => $artist,
+            ];
+
+            return response()->json($data, 201);
+        } catch (ValidationException $e) {
+            $data = [
+                'message' => 'Validation error',
+                'errors' => $e->errors(),
+            ];
+
+            return response()->json($data, 422);
+        } catch (\Exception $e) {
+            $data = [
+                'message' => 'Failed to create artist',
+                'error' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 500);
+        }
+    }
+
+public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'name' => 'required',
+                'genre' => 'required',
+            ]);
+
+            $artist = Artist::findOrFail($id);
+            $artist->name = $request->name;
+            $artist->genre = $request->genre;
+            $artist->save();
+
+            $data = [
+                'message' => 'Artist updated successfully',
+                'artist' => $artist,
+            ];
+
+            return response()->json($data);
+        } catch (ValidationException $e) {
+            $data = [
+                'message' => 'Validation error',
+                'errors' => $e->errors(),
+            ];
+
+            return response()->json($data, 422);
+        } catch (\Exception $e) {
+            $data = [
+                'message' => 'Failed to update artist',
+                'error' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 500);
+        }
+    }
+
+public function destroy($id)
+    {
+        try {
+            $artist = Artist::findOrFail($id);
+            $artist->delete();
+
+            $data = [
+                'message' => 'Artist deleted successfully',
+            ];
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            $data = [
+                'message' => 'Failed to delete artist',
+                'error' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 500);
+        }
+    }
+--- EJEMPLO DE UNIR TABLAS EN EL CONTROLADOR --------------------------------------------
+public function attachsong(Request $request)
+    {
+        try {
+            $User = User::find($request->user_id);
+    
+            // Verificar si ya existe la unión entre el User y la canción
+            if ($User->songs()->where('song_id', $request->song_id)->exists()) {
+                $message = 'Song already attached to the User';
+            } else {
+                // Unir la canción al User sin duplicación
+                $User->songs()->syncWithoutDetaching($request->song_id);
+                $message = 'Song attached successfully';
+            }
+    
+            $data = [
+                'message' => $message,
+                'User' => $User
+            ];
+    
+            return response()->json($data);
+        } catch (Exception $e) {
+            $error = "Failed to attach User/song: " . $e->getMessage();
+            return response()->json($error);
+            // Realiza las acciones necesarias para manejar este error
+        }
+    }
+----------------------------------------------------------------------------------
  finalmente configurar las rutas dentro de routes/api
 
 --------------------------------------------- ERRORES --- -------------------------------------------------------------------------------

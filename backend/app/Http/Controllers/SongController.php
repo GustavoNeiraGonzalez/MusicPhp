@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Song;
+use App\Models\Visits;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +38,6 @@ class SongController extends Controller
     public function store(Request $request)
     {
         try {
-            $song = new Song;
             // Validar la solicitud y procesar los datos necesarios...
 
             // Obtener el archivo de la canción
@@ -46,27 +47,42 @@ class SongController extends Controller
             $fileName = uniqid() . '.' . $songFile->getClientOriginalExtension();
             
             // Almacenar el archivo en el sistema de archivos
-            //Storage::disk('public')->put($fileName,$songFile);
-            $songFile->storeAs('', $fileName,'public');
+            $songFile->storeAs('public', $fileName);
 
             // Crear una nueva instancia del modelo Song y asignar la ruta de la canción
-            
+            $song = new Song;
             $song->song_path = 'public/' . $fileName;
             // Otros campos de la canción...
             $song->song_name = $request->song_name;
             $song->save();
             
+            // Crear la visita relacionada con la canción
+            $visit = new Visits();
+            $visit->song_id = $song->id;
+            $visit->visited_at = null; // Establecer como nulo, ya que aún no se ha visitado
+            $visit->visit
+            $visit->save();
+
             // Devolver una respuesta adecuada...
             $data = [
-                'message' => 'Artist created succesfully',
-                'artist' => $song
+                'message' => 'Song created successfully',
+                'song' => $song,
             ];
-            return response()->json($data);
-        }catch (Exception $e) {
-            // Excepción genérica para cualquier tipo de error
-            $error = "Failed to saving song: " . $e->getMessage();
-            return response()->json($error);
-            // Realiza las acciones necesarias para manejar este error
+            return response()->json($data, 201);
+        } catch (ValidationException $e) {
+            $data = [
+                'message' => 'Validation error',
+                'errors' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 422);
+        } catch (\Exception $e) {
+            $data = [
+                'message' => 'Failed to create song',
+                'error' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 500);
         }
     }
 

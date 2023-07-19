@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Visits extends Model
 {
     use HasFactory;
-    public function users()
+    public function user()
     {
-        return $this->belongsToMany(User::class, 'visit_user');
+        return $this->belongsTo(User::class);
     }
-    public function songs()
+    
+    public function song()
     {
-        return $this->belongsToMany(Song::class, 'visit_song');
+        return $this->belongsTo(Song::class);
     }
+    
 }

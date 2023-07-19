@@ -55,15 +55,13 @@ class SongController extends Controller
             // Otros campos de la canción...
             $song->song_name = $request->song_name;
             $song->save();
-            
-            // Crear la visita 
+
+            // creacion de la visita para la cancion
             $visit = new Visits();
+            $visit->song_id = $song->id;
             $visit->visited_at = null; // Establecer como nulo, ya que aún no se ha visitado
-            $visit->save();
-
-            // Realizar la unión entre la canción y la visita
-            $song->visits()->attach($visit->id);
-
+            $visit->save(); 
+           
             // Devolver una respuesta adecuada...
             $data = [
                 'message' => 'Song created successfully',

@@ -74,15 +74,11 @@ class VisitsController extends Controller
                 }
             } else {
                 // Si no existe una relación de usuario y visita, crear una nueva
-                $visit = new Visits();
+                $visit = $this->visits()->where('song_id', $song->id)->first();
                 $visit->user_id = $user->id;
-                $visit->song_id = $song->id;
                 $visit->visits = 1;
                 $visit->visited_at = $currentDateTime;
                 $visit->save();
-
-                // Establecer la relación entre el usuario y la visita
-                $user->visits()->attach($visit->id);
             }
 
             $data = [
@@ -93,7 +89,7 @@ class VisitsController extends Controller
         } catch (ValidationException $e) {
             $data = [
                 'message' => 'Validation error',
-                'errors' => $e->errors(),
+                'errors' => $e->getMessage(),
             ];
 
             return response()->json($data, 422);

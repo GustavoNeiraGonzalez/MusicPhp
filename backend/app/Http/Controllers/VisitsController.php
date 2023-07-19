@@ -134,6 +134,72 @@ class VisitsController extends Controller
         }
     }
 
+    public function countTime(Request $request, $id)
+    {
+        // FUNCION PARA ALMACENAR EL TIEMPO DE REPRODUCCION DE LA CANCION
+        try {
+            $tiempoReproduccion = $request->input('currentTime');
+            
+            // Obtener la visita actual
+            $visit = Visits::find($id);
+
+            // Verificar si ya hay una duración almacenada para esta visita
+            // Si no, establecerla en 0
+            $duracionAnterior = $visit->duration ?? 0;
+
+            // Sumar el tiempo actual al valor anterior de la duración
+            $visit->duration = $duracionAnterior + $tiempoReproduccion;
+            $visit->save();
+
+            // Luego, puedes devolver una respuesta al cliente
+            return response()->json(['message' => 'Tiempo de reproducción guardado correctamente']);
+            } catch (ValidationException $e) {
+                $data = [
+                    'message' => 'Validation error',
+                    'errors' => $e->getMessage(),
+                ];
+
+                return response()->json($data, 422);
+            } catch (\Exception $e) {
+                $data = [
+                    'message' => 'Failed to save playback time',
+                    'error' => $e->getMessage(),
+                ];
+
+                return response()->json($data, 500);
+            }
+    }
+
+    public function storeDevice(Request $request, $id)
+    {
+        try {
+            $device = $request->input('device');
+
+            // Obtener la visita actual
+            $visit = Visits::find($id);
+
+            // Guardar el dispositivo del usuario en la visita
+            $visit->device = $device;
+            $visit->save();
+
+            // Luego, puedes devolver una respuesta al cliente
+            return response()->json(['message' => 'Dispositivo guardado correctamente']);
+        } catch (ValidationException $e) {
+            $data = [
+                'message' => 'Validation error',
+                'errors' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 422);
+        } catch (\Exception $e) {
+            $data = [
+                'message' => 'Failed to save device',
+                'error' => $e->getMessage(),
+            ];
+
+            return response()->json($data, 500);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */

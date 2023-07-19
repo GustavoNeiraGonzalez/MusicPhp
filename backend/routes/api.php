@@ -6,6 +6,7 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\GenresController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,12 @@ Route::get('/genre/get/{id}', [GenresController::class, 'show']);
 
 // index users
 Route::get('/users', [UserController::class, 'index'])->name('index');;
+
+//obtener visitas
+Route::get('/visits', [VisitsController::class, 'index']);
+Route::get('/get/visits', [VisitsController::class, 'show']);
+
+
 // -------------------- rutas para admins ----------------
 Route::group([
     'middleware' => 'role:admin'
@@ -82,6 +89,10 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
+
+    Route::post('/add/visits', [VisitsController::class, 'addVisitToSong']);
+
+
     /*unir tablas user song porque son likes de canciones*/
     Route::post('atach/users/songs', [UserController::class, 'attachsong']);
     Route::post('detach/users/songs', [UserController::class, 'detachsong']);

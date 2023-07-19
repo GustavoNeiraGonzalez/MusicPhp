@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class VisitsController extends Controller
 {
+    public function __construct()
+    {
+        //
+        $this->middleware('auth:api', ['only' => ['addVisitToSong']]);
+    } 
     /**
      * Display a listing of the resource.
      */
@@ -105,9 +110,28 @@ class VisitsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Visits $visits)
+    public function show(Visits $visits,$id)
     {
         //
+        try {
+
+            $visits = Visits::find($id);
+
+            if (!$visits) {
+                return response()->json(['message' => 'Song not found'], 404);
+            }
+            $data = [
+                'message'=>'Song Details',
+                'visits' =>$visits->visits,
+                'visited_At'=>$visits->visited_At
+            ];
+            return response()->json($data);
+
+        } catch (\Exception $e) {
+            // Realizar las acciones necesarias para manejar este error
+            $error = "Failed to retrieve song: " . $e->getMessage();
+            return response()->json($error);
+        }
     }
 
     /**

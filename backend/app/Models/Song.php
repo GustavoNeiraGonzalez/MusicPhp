@@ -23,6 +23,6 @@ class Song extends Model
     }
     public function visits()
     {
-        return $this->hasMany(Visit::class);
+        return $this->hasMany(Visits::class);
     }
 }

@@ -90,7 +90,7 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('/add/visits', [VisitsController::class, 'addVisitToSong']);
+    Route::post('/add/visits/{song_id}', [VisitsController::class, 'addVisitToSong']);
 
 
     /*unir tablas user song porque son likes de canciones*/

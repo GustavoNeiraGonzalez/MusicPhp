@@ -8,6 +8,8 @@ use App\Models\Visits;
 use Carbon\Carbon;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class VisitsController extends Controller
 {
@@ -42,17 +44,14 @@ class VisitsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function addVisitToSong(Request $request)
+    public function addVisitToSong(Request $request,$song_id)
     {
         try {
             // Validar la solicitud y obtener los datos necesarios...
-            $request->validate([
-                'user_id' => 'required',
-                'song_id' => 'required',
-            ]);
 
-            $user = User::find($request->user_id);
-            $song = Song::find($request->song_id);
+            $user_id = Auth::id();
+            $user = User::find($user_id);
+            $song = Song::find($song_id);
 
             if (!$user || !$song) {
                 return response()->json(['message' => 'User or song not found'], 404);
@@ -70,16 +69,16 @@ class VisitsController extends Controller
                 // Verificar si la última visita fue hace al menos 8 minutos
                 $lastVisitedAt = $existingVisit->visited_at;
                 $minutesSinceLastVisit = $currentDateTime->diffInMinutes($lastVisitedAt);
-
-                if ($minutesSinceLastVisit >= 8) {
-                    // Agregar +1 al valor anterior de visits
+                if ($minutesSinceLastVisit < 8) { // Verificar que hayan pasado menos de 8 minutos
+                    return response()->json(['message' => 'Error: Visit time must be at least 8 minutes'], 400);
+                }
                     $existingVisit->visits += 1;
                     $existingVisit->visited_at = $currentDateTime;
                     $existingVisit->save();
-                }
+                
             } else {
                 // Si no existe una relación de usuario y visita, crear una nueva
-                $visit = $this->visits()->where('song_id', $song->id)->first();
+                $visit = Visits::query()->where('song_id', $song->id)->first();
                 $visit->user_id = $user->id;
                 $visit->visits = 1;
                 $visit->visited_at = $currentDateTime;

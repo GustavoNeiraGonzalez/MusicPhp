@@ -20,7 +20,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function visits()
     {
-        return $this->hasMany(Visit::class);
+        return $this->hasMany(Visits::class);
     }
     /**
      * The attributes that are mass assignable.

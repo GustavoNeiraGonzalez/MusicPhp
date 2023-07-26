@@ -43,6 +43,7 @@ Route::get('/users', [UserController::class, 'index'])->name('index');;
 //obtener visitas
 Route::get('/visits', [VisitsController::class, 'index']);
 Route::get('/get/visits/{id}', [VisitsController::class, 'show']);
+Route::get('/get/visitsuser/{id}', [VisitsController::class, 'showUser']);
 
 
 // -------------------- rutas para admins ----------------

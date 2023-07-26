@@ -77,8 +77,10 @@ class VisitsController extends Controller
                     $existingVisit->save();
                 
             } else {
-                // Si no existe una relación de usuario y visita, crear una nueva
-                $visit = Visits::query()->where('song_id', $song->id)->first();
+                // Si no existe una relación de usuario y visita,
+                // crear una nueva visita
+                $visit = new Visits();
+                $visit->song_id = $song_id;
                 $visit->user_id = $user->id;
                 $visit->visits = 1;
                 $visit->visited_at = $currentDateTime;
@@ -109,20 +111,21 @@ class VisitsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Visits $visits,$id)
+    public function show(Visits $visits,$song_id)
     {
         //
         try {
+            $totalVisits = Visits::where('song_id', $song_id)->sum('visits');
 
-            $visits = Visits::find($id);
+            $visits = Visits::query()->where('song_id', $song_id)->first();
 
             if (!$visits) {
                 return response()->json(['message' => 'Song not found'], 404);
             }
             $data = [
                 'message'=>'Song Details',
-                'visits' =>$visits->visits,
-                'visited_At'=>$visits->visited_At
+                'visits' =>$totalVisits,
+                'visited_At'=>$visits->visited_at
             ];
             return response()->json($data);
 
@@ -132,15 +135,32 @@ class VisitsController extends Controller
             return response()->json($error);
         }
     }
+    public function showUser(Visits $visits,$song_id)
+    {
+        //
+        try {
+            $user_id = Auth::id();
 
-    public function countTime(Request $request, $id)
+            $user = User::find($user_id);
+
+            $existingVisit = $user->visits()->where('song_id', $song_id)->first();
+
+            return($existingVisit);
+        } catch (\Exception $e) {
+            // Realizar las acciones necesarias para manejar este error
+            $error = "Failed to retrieve song: " . $e->getMessage();
+            return response()->json($error);
+        }
+    }
+
+    public function countTime(Request $request, $song_id)
     {
         // FUNCION PARA ALMACENAR EL TIEMPO DE REPRODUCCION DE LA CANCION
         try {
             $tiempoReproduccion = $request->input('currentTime');
             
             // Obtener la visita actual
-            $visit = Visits::find($id);
+            $visit = Visits::query()->where('song_id', $song_id)->first();
 
             // Verificar si ya hay una duración almacenada para esta visita
             // Si no, establecerla en 0
@@ -169,13 +189,13 @@ class VisitsController extends Controller
             }
     }
 
-    public function storeDevice(Request $request, $id)
+    public function storeDevice(Request $request, $song_id)
     {
         try {
             $device = $request->input('device');
 
             // Obtener la visita actual
-            $visit = Visits::find($id);
+            $visit = Visits::query()->where('song_id', $song_id)->first();
 
             // Guardar el dispositivo del usuario en la visita
             $visit->device = $device;

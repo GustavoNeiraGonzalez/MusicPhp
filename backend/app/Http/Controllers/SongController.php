@@ -32,6 +32,15 @@ class SongController extends Controller
         //
     }
 
+    //funcion para verificar el formato de la canción
+    private function isValidSongFile($file)
+    {
+        $allowedExtensions = ['mp4', 'mp3'];
+        $fileExtension = strtolower($file->getClientOriginalExtension());
+
+        return in_array($fileExtension, $allowedExtensions);
+    }
+    //------------------
     /**
      * Store a newly created resource in storage.
      */
@@ -45,7 +54,9 @@ class SongController extends Controller
 
             // Generar un nombre único para el archivo
             $fileName = uniqid() . '.' . $songFile->getClientOriginalExtension();
-            
+            if (!$this->isValidSongFile($songFile)) {
+                throw new \Exception('Invalid file type. Only .mp4 and .mp3 files are allowed.');
+            }
             // Almacenar el archivo en el sistema de archivos
             $songFile->storeAs('public', $fileName);
 
@@ -61,6 +72,7 @@ class SongController extends Controller
             // Devolver una respuesta adecuada...
             $data = [
                 'message' => 'Song created successfully',
+                'format' => $this->isValidSongFile($songFile) ? 'true' : 'false',
                 'song' => $song,
             ];
             return response()->json($data, 201);

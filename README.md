@@ -32,5 +32,7 @@ Esta aplicación, desarrollada en Laravel (PHP), ofrece una plataforma basada en
 -        "phpunit/phpunit": "^10.1",
 -        "spatie/laravel-ignition": "^2.0"
 
-
+# Instrucciones:
+ tener composer instalado y ejecutar composer install
+ dentro de la carpeta backend. Ejecutar proyecto -php artisan serve
 # imagenes

@@ -61,4 +61,11 @@ Laravel Framework 10.13.5
 8) ver visitas de una cancion:
 <img width="309" alt="get visits songs id" src="https://github.com/GustavoNeiraGonzalez/MusicPhp/assets/71986954/c69d057e-aa05-422d-9b35-dfe856af7ad5">
 
+9) unir una cancion a un artista:
+<img width="552" alt="unida con exito artista cancion" src="https://github.com/GustavoNeiraGonzalez/MusicPhp/assets/71986954/84bf3dc5-6db8-4c83-b5b3-339faf181bbe">
+
+10) borrada la union de cancion con artista
+<img width="559" alt="borrada la union de cancion y artista" src="https://github.com/GustavoNeiraGonzalez/MusicPhp/assets/71986954/3e9a08e7-1fc9-4b0f-a56c-902e5748aae1">
+
+
 --etc...

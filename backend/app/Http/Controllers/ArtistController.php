@@ -11,24 +11,16 @@ use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 class ArtistController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
-        $this->middleware('auth:api');
-        $artists = Artist::all();
-        $data = [
-            'message'=>'Artists Details',
-            'Artist' =>$artists,
-        ];
+        $artist = Artist::all();
         //return $artists to json response
-        return response()->json($data);
+        return response()->json($artist);
     }
 
     /**

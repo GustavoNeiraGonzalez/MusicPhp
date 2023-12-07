@@ -65,6 +65,10 @@ Route::group([
         Route::delete('/genre/delete/{id}', [GenresController::class, 'destroy']);
         Route::put('/genre/put/{id}', [GenresController::class, 'update']);
 
+        //unir tablas artista song
+        Route::post('/atach/artists/songs', [ArtistController::class, 'attachsong']);
+        Route::post('/detach/artists/songs', [ArtistController::class, 'detachsong']);
+        
         //unir tablas artista genero
         Route::post('/atach/artists/genres', [ArtistController::class, 'attachgenre']);
         Route::post('/detach/artists/genres', [ArtistController::class, 'detachgenre']);

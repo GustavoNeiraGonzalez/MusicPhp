@@ -28,11 +28,9 @@ class UserController extends Controller
 public function index()
 {
     try {
-        $users = User::select('users.*', 'roles.name as role', 'songs.song_name')
+        $users = User::select('users.*', 'roles.name as role')
             ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
             ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->leftJoin('songs_users', 'users.id', '=', 'songs_users.user_id')
-            ->leftJoin('songs', 'songs_users.song_id', '=', 'songs.id')
             ->get();
 
         $data = [

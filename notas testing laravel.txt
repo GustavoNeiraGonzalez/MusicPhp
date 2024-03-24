@@ -4,3 +4,22 @@ y en la carpeta feature: que es donde se haran pruebas con metodos https
 
 y la carpeta unit: donde se probará clases y metodos sin hacer peticiones https
 
+comando:
+
+ vendor/bin/phpunit
+con este comando probando los tests
+
+php artisan make:test ArtistModuleTest
+con este comando creamos un archivo para testear, en este caso con nombre
+ArtistModuleTest. se creará en la carpeta features de tests
+
+este es el formato para testear que la respuesta este ok de la peticion
+IMPORTANTE AGREGAR @test
+    /**
+     * @test
+     */
+    public function TestGetArtistInfo(): void
+    {
+        $response = $this->get('/api/artists/get/6')
+                        ->assertStatus(200);
+    }

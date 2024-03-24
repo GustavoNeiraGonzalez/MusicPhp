@@ -1,0 +1,6 @@
+de por si laravel ya contiene de por si una carpeta de testing
+
+y en la carpeta feature: que es donde se haran pruebas con metodos https
+
+y la carpeta unit: donde se probará clases y metodos sin hacer peticiones https
+

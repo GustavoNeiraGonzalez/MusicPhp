@@ -23,3 +23,14 @@ IMPORTANTE AGREGAR @test
         $response = $this->get('/api/artists/get/6')
                         ->assertStatus(200);
     }
+
+---------------------------------------------
+FACTORIES / FACTORY
+Con esto podemos hacer una falsa base de datos para no tener que usar la
+base de datos real.
+
+para crear un archivo factory
+php artisan make:factory ArtistFactory --model=Artist
+
+NOTA:Luego de hacer cambios en el archivo factory, es necesario migrar
+con el comando:  php artisan migrate

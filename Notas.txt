@@ -25,7 +25,7 @@ password usada mysql y admin asdf5742k
         });
   y luego migrar php artisan migrate
 
-- para crear un modelo se usa php artisan make:model Genres -mcr y de ahi en la seccion database/migrations 
+- para crear un modelo se usa php artisan make:model Genres -mcrf y de ahi en la seccion database/migrations 
   buscar el modelo creado y modificar los datos para el modelo deseado a crear,
 
 - para crear relacion de un modelo a otro se usa php artisan make:migration create_artists_genres_table 

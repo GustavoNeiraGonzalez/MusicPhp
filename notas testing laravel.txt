@@ -30,7 +30,47 @@ Con esto podemos hacer una falsa base de datos para no tener que usar la
 base de datos real.
 
 para crear un archivo factory
-php artisan make:factory ArtistFactory --model=Artist
+1)php artisan make:factory ArtistFactory --model=Artist
 
-NOTA:Luego de hacer cambios en el archivo factory, es necesario migrar
-con el comando:  php artisan migrate
+el archivo se veria asi:
+
+class ArtistFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            //
+            'name' => fake()->name(),
+            'description' => fake()->text()
+        ];
+    }
+}
+donde desde return viene los datos del modelo Artist, para luego ser 
+rellenados automaticamente
+
+aqui te das una idea de los tipos de datos que hay, aunque en este caso
+no se usa faker por defecto si no fake(), lo cual es raro
+https://github.com/fzaninotto/Faker
+
+2) NOTA:Luego de hacer cambios en el archivo factory, es necesario migrar
+con el comando:  php artisan migrate 
+para que hagan efecto
+
+ahora tienes en la cmd poner:    php artisan tinker
+y dentro de tinker puedes rellenar los datos con 
+Artist::factory()->count(1)->create()  
+
+3) crear un seeder, que es para rellenar la db falsa con datos automaticamente
+comando:
+-php artisan make:seeder ArtistSeeder
+
+para ahora rellenar la db con los datos con el seeder ya
+ creado es:
+php artisan db:seed
+o para un seed en especifico
+-php artisan db:seed --class=NombreDelSeeder

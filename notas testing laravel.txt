@@ -74,3 +74,18 @@ para ahora rellenar la db con los datos con el seeder ya
 php artisan db:seed
 o para un seed en especifico
 -php artisan db:seed --class=NombreDelSeeder
+
+ahora, para hacer seeds con tablas que tienen relaciones entre si y que sirve el
+el caso ademas tienen tablas intermedias,
+(ESTO SE HARA EN EL SEEDER Y RECUERDA TENER LOS 2 FACTORYS CREADOS Y CONFIGURADOS)
+En el seeder seria algo asi, donde el seeder es para crear una cancion, esta cancion
+esta ligada a 1 artista, por lo que count es 1, si tuviese mas de 1 se aumentaria este
+numero
+
+    public function run(): void
+    {
+        //
+        $user = Song::factory()
+            ->has(Artist::factory()->count(1))
+            ->create();
+    }

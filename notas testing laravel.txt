@@ -75,12 +75,36 @@ php artisan db:seed
 o para un seed en especifico
 -php artisan db:seed --class=NombreDelSeeder
 
-ahora, para hacer seeds con tablas que tienen relaciones entre si y que sirve el
+aqui hay un ejemplo del seeder normal con datos rellenados automaticamente
+segun la configuracion del factory, y otra con datos escritos en seeder,
+esta ultima habria que probarla, aun no se si funciona
+class ArtistSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //
+        \App\Models\Artist::factory(1)->create();
+        \App\Models\Artist::factory()->create([
+            'name' => 'Test User',
+            'desription' => 'test example ;D',
+            ]);
+    }
+    
+}
+
+
+4)ahora, para hacer seeds con tablas que tienen relaciones entre si y que sirve el
 el caso ademas tienen tablas intermedias,
 (ESTO SE HARA EN EL SEEDER Y RECUERDA TENER LOS 2 FACTORYS CREADOS Y CONFIGURADOS)
 En el seeder seria algo asi, donde el seeder es para crear una cancion, esta cancion
 esta ligada a 1 artista, por lo que count es 1, si tuviese mas de 1 se aumentaria este
 numero
+
+use App\Models\Artist;
+use App\Models\Song;
 
     public function run(): void
     {

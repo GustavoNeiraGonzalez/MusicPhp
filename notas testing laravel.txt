@@ -1,7 +1,34 @@
 de por si laravel ya contiene de por si una carpeta de testing
 
 y en la carpeta feature: que es donde se haran pruebas con metodos https
-
+-----------------------------------------------------------------------------------------------
+-primero, PARA CREAR UNA BASE DE DATOS FALSA EN LARAVEL debemos configurarla en el 
+ archivo "phpunit.xml" aqui abran 2 lineas comentadas, debemos descomentarlas para
+ usar una base de datos por defecto SQLite, 
+ estas serian las 2 lineas:
+        <env name="DB_CONNECTION" value="sqlite"/>   
+        <env name="DB_DATABASE" value=":memory:"/>   
+-AHORA SI QUEREMOS, QUE ES LO MAS PROBABLE, UNA BD DE PRUEBAS MYSQL NECESITAMOS 
+ ESPECIFICAR ALLÍ LA CONEXION QUE YA TENEMOS CON LA BDD PERO CAMBIANDO 
+DB_DATABASE POR EL NOMBRE DE LA BD DE PRUEBA, Y EN DB_CONNECTION PONER mysql
+	DB_CONNECTION=mysql
+	DB_DATABASE=musicTesting
+-adicional, en lugar de hacer esto
+ podemos crear una copia de .env, y desde ahi cambiar esos valores, dejando comentado
+ lo que habia antes en phpunit.xml
+ Y LO QUE DEBEMOS ES COPIAR EL .env y ponerle de nombre .env.testing
+2)CREAR LA COPIA DE LA BD MYSQL, SE ME OCURREN 2 OPCIONES, crear un esquema con el 
+  nombre de la bd de prueba y ejecutar las migraciones (no lo he probado)
+  y la que me funciono, fue de la bd original, voy a server > data export 
+	(RECUERDA QUITAR EL OUTPUT DE ABAJO QUE TE TAPA TODO)
+  eligo la bd original, alado del boton select views, en la casilla debe poner
+  "dump structure and data" luego marcar las 3 casillas de objects to export
+  luego marcas las casillas export to self-contained, eliges donde guardarlo,
+  y marcas include create schema,  arriba en object selection le das a export progress  
+  y le das  a start export, 
+  luego finalmente le das arriba en file, eliges open script, y ahi le cambias el nombre
+  a la bd por la de prueba, ylisto
+-----------------------------------------------------------------------------------
 y la carpeta unit: donde se probará clases y metodos sin hacer peticiones https
 
 comando:
@@ -26,10 +53,9 @@ IMPORTANTE AGREGAR @test
     }
 
 IMPORTANTE: USE REFRESHDATABASE 
-ELIMINA LOS DATOS DE LA BDD, (se agregaria delante de test)
-ES OPCIONAL SABIENDO QUE EN UNA BASE DE DATOS RELACIONAL 
-NECESITAS ELIMINAR DATOS DE OTRAS TABLAS TAMBIEN, y algunas
-dara error, 	
+ELIMINA Las tablas de la BDD, (se agregaria delante de test)
+es opcional y ejecutara tambien las migraciones, yo tenia errores
+en las migraciones asi que me dio errores
 
 ---------------------------------------------
 FACTORIES / FACTORY

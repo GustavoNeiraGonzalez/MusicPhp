@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class ArtistModuleTest extends TestCase
 {
-
+    use RefreshDatabase;
     /**
      * @test
      */

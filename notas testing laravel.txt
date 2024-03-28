@@ -15,6 +15,7 @@ ArtistModuleTest. se creará en la carpeta features de tests
 
 este es el formato para testear que la respuesta este ok de la peticion
 IMPORTANTE AGREGAR @test
+
     /**
      * @test
      */
@@ -24,10 +25,16 @@ IMPORTANTE AGREGAR @test
                         ->assertStatus(200);
     }
 
+IMPORTANTE: USE REFRESHDATABASE 
+ELIMINA LOS DATOS DE LA BDD, (se agregaria delante de test)
+ES OPCIONAL SABIENDO QUE EN UNA BASE DE DATOS RELACIONAL 
+NECESITAS ELIMINAR DATOS DE OTRAS TABLAS TAMBIEN, y algunas
+dara error, 	
+
 ---------------------------------------------
 FACTORIES / FACTORY
-Con esto podemos hacer una falsa base de datos para no tener que usar la
-base de datos real.
+Con esto podemos hacer para crear datos de prueba aleatorios 
+para el testing
 
 para crear un archivo factory
 1)php artisan make:factory ArtistFactory --model=Artist
@@ -65,7 +72,7 @@ ahora tienes en la cmd poner:    php artisan tinker
 y dentro de tinker puedes rellenar los datos con 
 Artist::factory()->count(1)->create()  
 
-3) crear un seeder, que es para rellenar la db falsa con datos automaticamente
+3) crear un seeder, con datos de prueba automaticamente
 comando:
 -php artisan make:seeder ArtistSeeder
 
@@ -113,3 +120,47 @@ use App\Models\Song;
             ->has(Artist::factory()->count(1))
             ->create();
     }
+
+NOTA: Al parecer hacer falsas base de datos se debe hacer de otra forma y no parece
+necesario de aprender
+
+5) TESTEAR LOS DATOS, COMO UNA PETICION GET,
+ VAS A LOS TEST QUE CREAMOS ANTES O CREAS OTRO TEST Y PROBAMOS TANTO LA PETICION
+ QUE SEA CORRECTA COMO EL TIPO DE DATO TAMBIEN CON ALGUN DATO DE PRUEBA
+
+   public function TestGetArtistInfo(): void
+    {
+        $Artist = [
+            "Artist"=>[
+
+                "name"=>"Fae Littel II",
+            ]
+            ];
+        $response = $this->get('/api/artists/get/2');
+ 
+        $response
+            ->assertStatus(200)
+            ->assertJson($Artist);
+    }
+
+AQUI $Artist es para tener la variable array a probar para mayor legibilidad
+     $response es la peticion, probamos la respuesta que sea correcta (200)
+     (si te devuelve otra respuesta es mejor que veas que significan los codigos
+     https)
+     tambien se prueba que la respuesta del artista con id 2 devuelva una artista
+     con nombre Fae Littel II especificamente
+
+NOTA: LA FUNCION PARA LA PETICION GET SE DEBE CREAR, COSA QUE ESTA EN EL OTRO TXT
+
+tambien se puede hacer verificar varias cosas aqui un ejemplo (no de artists):
+
+        ->assertJson(fn (AssertableJson $json) =>
+            $json->where('id', 1)
+                 ->where('name', 'Victoria Faith')
+                 ->where('email', fn ($email) => str($email)->is('victoria@gmail.com'))
+                 ->whereNot('status', 'pending')
+                 ->missing('password')
+                 ->etc()
+        );
+
+mas info en : https://laravel.com/docs/9.x/http-tests#customizing-request-headers

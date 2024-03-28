@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        /*
         Schema::table('model_has_roles', function (Blueprint $table) {
             $table->dropColumn('team_id');
         });
@@ -26,8 +26,11 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+    /*
     public function down(): void
     {
         //
+    }
+    */
     }
 };

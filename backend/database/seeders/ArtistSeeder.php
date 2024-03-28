@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 
 class ArtistSeeder extends Seeder
 {
+    
     /**
      * Run the database seeds.
      */
@@ -15,8 +16,8 @@ class ArtistSeeder extends Seeder
         //
         \App\Models\Artist::factory(1)->create();
         \App\Models\Artist::factory()->create([
-            'name' => 'Test User',
-            'desription' => 'test example ;D',
+            'name' => 'Michael Jackson',
+            'description' => 'test example ;D',
             ]);
     }
     

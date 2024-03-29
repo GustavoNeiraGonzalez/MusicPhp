@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class SongController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */

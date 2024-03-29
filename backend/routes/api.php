@@ -29,9 +29,10 @@ Route::get('/artists', [ArtistController::class, 'index']);
 Route::get('/artists/get/{id}', [ArtistController::class, 'show']);
 
 //songs
-Route::get('/songs', [SongController::class, 'index']);
 Route::get('/songs/get/file/{id}', [SongController::class, 'showFile']);
 Route::get('/songs/get/name/{id}', [SongController::class, 'showName']);
+
+Route::get('/songs', [SongController::class, 'index']);
 
 //genre
 Route::get('/genre', [GenresController::class, 'index']);
@@ -87,7 +88,7 @@ Route::group([
         Route::put('/users/put/{id}', [UserController::class, 'update']);
         
     });
-// ---------------- rutas solo para logeados ----------------
+// ---------------- rutas usuarios NO LOGEADOS ----------------
 Route::group([
 
     'middleware' => 'api',
@@ -95,17 +96,17 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('/add/visits/{song_id}', [VisitsController::class, 'addVisitToSong']);
 
 
-    /*unir tablas user song porque son likes de canciones*/
-    Route::post('atach/users/songs', [UserController::class, 'attachsong']);
-    Route::post('detach/users/songs', [UserController::class, 'detachsong']);
-    
     Route::post('/users/logout', [UserController::class, 'logout']);
     Route::post('/users/refresh', [UserController::class, 'refresh']);
-    Route::get('/users/med', [UserController::class, 'me']);
     Route::post('/users/register', [UserController::class, 'register']);
     Route::post('/users/login', [UserController::class, 'login'])->name('login');
-    
+    Route::get('/users/med', [UserController::class, 'me']);
+
 });
+//con ->middleware('auth:api') verificas que este logeado
+Route::post('/genre/post', [GenresController::class, 'store'])->middleware('auth:api');
+Route::post('/add/visits/{song_id}', [VisitsController::class, 'addVisitToSong'])->middleware('auth:api');
+Route::post('atach/users/songs', [UserController::class, 'attachsong'])->middleware('auth:api');
+Route::post('detach/users/songs', [UserController::class, 'detachsong'])->middleware('auth:api');

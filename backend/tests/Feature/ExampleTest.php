@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    use RefreshDatabase;
     /**
      * @test
      */
@@ -27,7 +26,17 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
-    
+    /**
+     * @test
+     */
+    public function TestGenrePost(): void
+    {   
+        $genre = 'Rock';
+        $response = $this->post('/api/genre/post',[
+            "genre"=>$genre
+        ]);
 
+        $response->assertStatus(200);
+    }
     
 }

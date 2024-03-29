@@ -10,7 +10,6 @@ use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class VisitsController extends Controller
 {
     public function __construct()

@@ -263,13 +263,14 @@ public function index()
             $User = User::find($request->user_id);
     
             // Verificar si ya existe la unión entre el User y la canción
-            if ($User->songs()->where('song_id', $request->song_id)->exists()) {
+            if ($User->songs()->where('user_id', $request->song_id)->exists()) {
                 $message = 'Song already attached to the User';
             } else {
                 // Unir la canción al User sin duplicación
                 $User->songs()->syncWithoutDetaching($request->song_id);
                 $message = 'Song attached successfully';
             }
+            
     
             $data = [
                 'message' => $message,

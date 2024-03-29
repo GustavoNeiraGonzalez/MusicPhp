@@ -90,9 +90,10 @@ aqui te das una idea de los tipos de datos que hay, aunque en este caso
 no se usa faker por defecto si no fake(), lo cual es raro
 https://github.com/fzaninotto/Faker
 
-2) NOTA:Luego de hacer cambios en el archivo factory, es necesario migrar
-con el comando:  php artisan migrate 
-para que hagan efecto
+2) NOTA:Luego de hacer cambios en el archivo factory
+me parecio ver que el comando para migrar surtia cambios, aunque hay que probar
+quizas no ayuda en nada
+
 
 ahora tienes en la cmd poner:    php artisan tinker
 y dentro de tinker puedes rellenar los datos con 
@@ -149,6 +150,9 @@ use App\Models\Song;
 
 NOTA: Al parecer hacer falsas base de datos se debe hacer de otra forma y no parece
 necesario de aprender
+
+NOTA IMPORTANTE: PARA HACER LOS CAMBIOS EN LA BDD DE TEST, SE NECESITAN EJECUTAR LOS
+SEEDERS DESDE LOS ARCHIVOS TEST, Y QUE ESTOS TAMBIEN ESTEN CONFIGURADOS PARA ESA BD TEST
 
 5) TESTEAR LOS DATOS, COMO UNA PETICION GET,
  VAS A LOS TEST QUE CREAMOS ANTES O CREAS OTRO TEST Y PROBAMOS TANTO LA PETICION

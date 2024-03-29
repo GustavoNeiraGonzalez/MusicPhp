@@ -194,3 +194,46 @@ tambien se puede hacer verificar varias cosas aqui un ejemplo (no de artists):
         );
 
 mas info en : https://laravel.com/docs/9.x/http-tests#customizing-request-headers
+
+1)PROBAR UNA PETICION QUE REQUIERE QUE ESTES LOGEADO, cabe destacar que encontre errores en como
+proteger una peticion http con el login, se debe agregar en la peticion en el archivo api
+->middleware('auth:api');
+
+AHORA CUANDO QUIERES HACER LA PETICION CON ESE REQUERIMIENTO SE HACE ALGO ASI 
+    public function TestGenrePost(): void
+    {   
+        $user = User::factory()->create();
+        $genre = 'Rock';
+        $response = $this->actingAs($user)->post('/api/genre/post',[
+            "genre"=>$genre
+        ]);
+
+        $response->assertStatus(200);
+    } 
+
+esta funcion crea un user y lo usa para estar logeado y hacer la peticion, la cual
+creará un genero, en este caso Rock. recuerda que las claves para hacer que este logeado
+en este test es $user
+
+2) PARA VERIFICAR QUE LA PETICION HTTP DE LOGEO ESTE CORRECTO, SE HACE DE ESTA FORMA
+
+public function TestLoginUserWithMethod(): void
+    {   
+        $this->seed(DatabaseSeeder::class);
+        $userEmail = 'user@user.com';
+        $userPassword ='password'; //si los junto como array, realmente 
+        //funciona el test 
+
+        $response = $this->post('/api/auth/users/login',[
+            "email"=>$userEmail, "password"=>$userPassword
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+En este caso useremail y userpassword son identificaciones de un usuario que se crea con
+los factories y seeder, ya conocemos su nombre y logearemos con ellos, 
+NOTA: HACER UNA FUNCION ARRAY PARA AGRUPAR USEREMAIL Y USERPASSWORD DA ERROR, POR ESO
+      son variables separadas y escritas de esa forma en el codigo
+(esto verifica que se pueda logear, no es para que se use el jwt en otros test, si quieres
+hacer eso tienes que ir al paso 1 que esta una mas arriba)

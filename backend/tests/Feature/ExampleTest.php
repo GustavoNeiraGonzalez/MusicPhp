@@ -9,6 +9,7 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * @test
      */
@@ -31,8 +32,9 @@ class ExampleTest extends TestCase
      */
     public function TestGenrePost(): void
     {   
+        $user = User::factory()->create();
         $genre = 'Rock';
-        $response = $this->post('/api/genre/post',[
+        $response = $this->actingAs($user)->post('/api/genre/post',[
             "genre"=>$genre
         ]);
 

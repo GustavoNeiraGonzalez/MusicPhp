@@ -109,4 +109,4 @@ Route::group([
 Route::post('/add/visits/{song_id}', [VisitsController::class, 'addVisitToSong'])->middleware('auth:api');
 Route::post('atach/users/songs', [UserController::class, 'attachsong'])->middleware('auth:api');
 Route::post('detach/users/songs', [UserController::class, 'detachsong'])->middleware('auth:api');
-Route::post('/genre/post', [GenresController::class, 'store']);
+Route::post('/genre/post', [GenresController::class, 'store'])->middleware('auth:api');

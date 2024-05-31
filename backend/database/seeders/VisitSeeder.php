@@ -1,13 +1,14 @@
 <?php
 
 namespace Database\Seeders;
-use App\Models\Artist;
-use App\Models\Song;
 
+use App\Models\Song;
+use App\Models\User;
+use App\Models\Visits;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SongSeeder extends Seeder
+class VisitSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,8 +16,7 @@ class SongSeeder extends Seeder
     public function run(): void
     {
         //
-        $song = Song::factory()
-            ->has(Artist::factory()->count(1))
-            ->create();
+        $visits = Visits::factory(1)
+        ->create();
     }
 }

@@ -57,7 +57,9 @@ class VisitsController extends Controller
             }else if(!$song){
                 return response()->json(['message' => 'song not found'], 404);
             }
-
+            /**
+             * @var \App\Models\Visits $existingVisit
+             */
             // Verificar si ya existe la relación entre el usuario y la visita
             $existingVisit = $user->visits()->where('song_id', $song->id)->first();
 
@@ -72,10 +74,12 @@ class VisitsController extends Controller
                 $minutesSinceLastVisit = $currentDateTime->diffInMinutes($lastVisitedAt);
                 if ($minutesSinceLastVisit < 8) { // Verificar que hayan pasado menos de 8 minutos
                     return response()->json(['message' => 'Error: Visit time must be at least 8 minutes'], 400);
-                }
+                }else{
                     $existingVisit->visits += 1;
                     $existingVisit->visited_at = $currentDateTime;
                     $existingVisit->save();
+                }
+                  
                 
             } else {
                 // Si no existe una relación de usuario y visita,

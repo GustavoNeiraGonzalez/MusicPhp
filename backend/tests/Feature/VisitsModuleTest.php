@@ -62,6 +62,8 @@ class VisitsModuleTest extends TestCase
                 ->assertJsonFragment($visits); //jsonfragment verifica que el dato
             //no sea un array para buscarlo, (data:data) no ([data:[.. : ..]])
 
+        //--- SI QUISIERA BUSCAR POR ID CANCION MODIFICARIA 
+        // ---             VISITSCONTROLLER ---
     }
 
 }

@@ -52,8 +52,10 @@ class VisitsController extends Controller
             $user = User::find($user_id);
             $song = Song::find($song_id);
 
-            if (!$user || !$song) {
-                return response()->json(['message' => 'User or song not found'], 404);
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }else if(!$song){
+                return response()->json(['message' => 'song not found'], 404);
             }
 
             // Verificar si ya existe la relación entre el usuario y la visita

@@ -42,7 +42,7 @@ Route::get('/genre/get/{id}', [GenresController::class, 'show']);
 Route::get('/users', [UserController::class, 'index'])->name('index');;
 
 //obtener visitas
-Route::get('/visits', [VisitsController::class, 'index']);
+Route::get('/get/visits', [VisitsController::class, 'index']);
 Route::get('/get/visits/{id}', [VisitsController::class, 'show']);
 Route::get('/get/visitsuser/{id}', [VisitsController::class, 'showUser']);
 
@@ -97,6 +97,7 @@ Route::group([
 ], function ($router) {
 
 
+    Route::post('/add/visits/{song_id}', [VisitsController::class, 'addVisitToSong'])->middleware('auth:api');
 
     Route::post('/users/logout', [UserController::class, 'logout']);
     Route::post('/users/refresh', [UserController::class, 'refresh']);
@@ -106,7 +107,6 @@ Route::group([
 
 });
 //con ->middleware('auth:api') verificas que este logeado
-Route::post('/add/visits/{song_id}', [VisitsController::class, 'addVisitToSong'])->middleware('auth:api');
 Route::post('atach/users/songs', [UserController::class, 'attachsong'])->middleware('auth:api');
 Route::post('detach/users/songs', [UserController::class, 'detachsong'])->middleware('auth:api');
 Route::post('/genre/post', [GenresController::class, 'store'])->middleware('auth:api');

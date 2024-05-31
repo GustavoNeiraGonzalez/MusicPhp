@@ -33,7 +33,7 @@ y la carpeta unit: donde se probará clases y metodos sin hacer peticiones https
 
 comando:
 
- vendor/bin/phpunit
+
 con este comando probando los tests
 
 php artisan make:test ArtistModuleTest
@@ -148,8 +148,6 @@ use App\Models\Song;
             ->create();
     }
 
-NOTA: Al parecer hacer falsas base de datos se debe hacer de otra forma y no parece
-necesario de aprender
 
 NOTA IMPORTANTE: PARA HACER LOS CAMBIOS EN LA BDD DE TEST, SE NECESITAN EJECUTAR LOS
 SEEDERS DESDE LOS ARCHIVOS TEST, Y QUE ESTOS TAMBIEN ESTEN CONFIGURADOS PARA ESA BD TEST

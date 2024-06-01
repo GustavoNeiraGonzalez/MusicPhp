@@ -34,7 +34,7 @@ y la carpeta unit: donde se probará clases y metodos sin hacer peticiones https
 comando:
 
 
-con este comando probando los tests
+con este comando crea los tests
 
 php artisan make:test ArtistModuleTest
 con este comando creamos un archivo para testear, en este caso con nombre
@@ -235,3 +235,10 @@ NOTA: HACER UNA FUNCION ARRAY PARA AGRUPAR USEREMAIL Y USERPASSWORD DA ERROR, PO
       son variables separadas y escritas de esa forma en el codigo
 (esto verifica que se pueda logear, no es para que se use el jwt en otros test, si quieres
 hacer eso tienes que ir al paso 1 que esta una mas arriba)
+
+----
+PARA TESTEAR UN ARCHIVO TESTING SE PUEDE USAR ESTE COMANDO
+
+php artisan test .\tests\Feature\VisitsModuleTest.php
+
+donde VisitsModuleTest.php es el archivo a testear y usar las funciones a probar

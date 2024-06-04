@@ -18,3 +18,4 @@ class Artist extends Model
         return $this->belongsToMany(Genres::class, 'artists_genres');
     }
 }
+
